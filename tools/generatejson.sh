@@ -29,7 +29,7 @@ TYPE=$(echo $FILENAME | cut -f4 -d '-')
 VERSION=$(echo $FILENAME | cut -f2 -d '-')
 RELASE_TAG=lineage-${VERSION}-${DATE}-${ROMTYPE}-${DEVICE}
 
-URL="https://github.com/penglezos/device_xiaomi_raphael/releases/download/${RELASE_TAG}/${FILENAME}"
+URL="https://github.com/kevin-btw/LineageOS-Releases/download/${RELASE_TAG}/${FILENAME}"
 
 response=$(jq -n --arg datetime $TIMESTAMP \
         --arg filename $FILENAME \
