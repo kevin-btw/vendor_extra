@@ -9,11 +9,11 @@
 #
 
 # Override host metadata to make builds more reproducible and avoid leaking info
-export BUILD_USERNAME=penglezos
+export BUILD_USERNAME=Kevin
 export BUILD_HOSTNAME=android-build
 
 # Device defaults
-DEVICE='raphael'
+DEVICE='hanoip'
 BUILD_TYPE='userdebug'
 
 # Setup ccache
@@ -45,14 +45,6 @@ installclean () {
     source $(gettop)/vendor/lineage/vars/aosp_target_release
     lunch lineage_${DEVICE}-${aosp_target_release}-${BUILD_TYPE}
     make installclean
-}
-
-# Sync sources
-sync () {
-    repo init -u https://github.com/LineageOS/android.git -b lineage-21.0 --git-lfs
-    rm -rf .repo/local_manifests && mkdir -p .repo/local_manifests
-    curl https://raw.githubusercontent.com/penglezos/android_vendor_extra/main/.repo/local_manifests/lineage.xml -o .repo/local_manifests/lineage.xml
-    repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags
 }
 
 # Apply patches
@@ -89,13 +81,6 @@ kernel () {
     make bootimage
 }
 
-# Build recovery image
-recovery () {
-    source build/envsetup.sh
-    source $(gettop)/vendor/lineage/vars/aosp_target_release
-    lunch lineage_${DEVICE}-${aosp_target_release}-${BUILD_TYPE}
-    make recoveryimage
-}
 
 # Usage information when there are no arguments
 if [[ $# -eq 0 ]]; then
@@ -105,11 +90,9 @@ if [[ $# -eq 0 ]]; then
     echo "  -z, --zram                     Setup zram"
 	echo "  -c, --clean                    Clean entire build directory"
 	echo "  -i, --installclean             Dirty build"
-	echo "  -s, --sync                     Sync ROM and device sources"
 	echo "  -p, --patches                  Apply patches"
 	echo "  -b, --build                    Perform ROM build"
 	echo "  -k, --kernel                   Perform kernel image build"
-	echo "  -r, --recovery                 Perform recovery image build"
 	echo ""
 	exit 0
 fi
@@ -120,10 +103,8 @@ while [[ "$#" -gt 0 ]]; do case $1 in
     -z|--zram) zram;;
 	-c|--clean) clean;;
 	-i|--installclean) installclean;;
-	-s|--sync) sync;;
 	-p|--patches) patches;;
 	-b|--build) build;;
 	-k|--kernel) kernel;;
-    -r|--recovery) recovery;;
 	*) echo "Unknown parameter passed: $1"; exit 1;;
 esac; shift; done
